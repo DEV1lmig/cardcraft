@@ -2,9 +2,11 @@
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
-import { submitFormAction } from '../api/action'; // Assuming actions.js is in the parent directory of register
-import Head from "next/head"; // Import Head for metadata handling
-import { metadata } from './metadata'; // Import metadata
+import axios from "axios";
+import Head from "next/head";
+import { metadata } from './metadata';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -23,10 +25,52 @@ export default function Register() {
 
   const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    if (!formData.username || !formData.email || !formData.password) {
+      toast.error("Todos los campos son requeridos");
+      return false;
+    }
+    if (formData.username.length < 8) {
+      toast.error("El usuario debe ser mas largo que 8 caracteres");
+      return false;
+    }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      toast.error("La contraseña debe contener al menos 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial");
+      return false;
+    }
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Correo inválido");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    startTransition(() => {
-      submitFormAction('register', formData);
+    if (!validateForm()) return;
+
+    startTransition(async () => {
+      try {
+        const formData = new FormData(e.target);
+
+        const response = await axios.post('https://grupo5.devcorezulia.lat/cardcraft-backend/public/register.php', formData, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Response data:', response.data);
+
+        if (!response.data) {
+          toast.error("Registro fallido");
+        }else{
+          toast.error("Registro exitoso");
+        }
+      } catch (error) {
+        console.error('Error during form submission:', error);
+        toast.error("An error occurred during registration");
+      }
     });
   };
 
@@ -37,19 +81,17 @@ export default function Register() {
         <meta name="description" content={metadata.description} />
       </Head>
       <div className="min-h-screen flex items-center justify-center bg-transparent p-6">
-        {/* Image Section */}
+        <ToastContainer />
         <div className="hidden md:block md:w-1/2 h-full">
           <div className="relative w-full h-full">
             <Image
               src="/images/backgroundRegister.png"
-              alt="CartCraft Registration"
+              alt="Bienvenido a CartCraft"
               className="w-full h-full object-cover"
               fill={true}
             />
           </div>
         </div>
-        
-        {/* Form Section */}
         <div className="w-full md:w-1/2 p-8 lg:p-12 flex flex-col items-center justify-center bg-white rounded-lg shadow-lg max-w-md">
           <h1 className="text-4xl font-bold text-blue-700 mb-4">
             Register for <span className="text-green-500">CartCraft</span>
@@ -59,7 +101,7 @@ export default function Register() {
               <input 
                 type="text" 
                 name="username"
-                placeholder="Username" 
+                placeholder="Usuario" 
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none text-black focus:ring-2 focus:ring-blue-600"
                 value={formData.username}
                 onChange={handleChange}
@@ -67,7 +109,7 @@ export default function Register() {
             </div>
             <div className="mb-4">
               <input 
-                type="email" 
+                type="text" 
                 name="email"
                 placeholder="Email" 
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none text-black focus:ring-2 focus:ring-blue-600"
@@ -79,7 +121,7 @@ export default function Register() {
               <input 
                 type="password" 
                 name="password"
-                placeholder="Password" 
+                placeholder="Contraseña" 
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none text-black focus:ring-2 focus:ring-blue-600"
                 value={formData.password}
                 onChange={handleChange}
@@ -87,10 +129,10 @@ export default function Register() {
             </div>
             <button 
               type="submit" 
-              className="w-full px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-300"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
               disabled={isPending}
             >
-              {isPending ? 'Registering...' : 'Register'}
+              {isPending ? 'Registrando...' : 'Registrar'}
             </button>
           </form>
         </div>

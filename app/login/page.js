@@ -2,11 +2,13 @@
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
-import { submitFormAction } from '../api/action';
+import axios from "axios";
+import { useAuth } from '../context/authContext';
 import Head from "next/head"; // Import Head for metadata handling
 import { metadata } from './metadata'; // Import metadata
 
 export default function Login() {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,10 +24,25 @@ export default function Login() {
 
   const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    startTransition(() => {
-      submitFormAction('login', formData);
+    startTransition(async () => {
+      try {
+        const formData = new FormData(e.target); // Automatically gather form data
+  
+        const response = await axios.post('https://grupo5.devcorezulia.lat/cardcraft-backend/public/login.php', formData, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log('Response data:', response.data);
+  
+        if (response.data.token) {
+          login(response.data.token);
+        }
+      } catch (error) {
+        console.error('Error during form submission:', error);
+      }
     });
   };
 
