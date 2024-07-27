@@ -3,12 +3,14 @@
 import { useState, useTransition } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { useAuth } from '../context/authContext';
+import { useAuth } from '@/context/authContext';
 import Head from "next/head"; // Import Head for metadata handling
 import { metadata } from './metadata'; // Import metadata
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const { login } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -39,6 +41,7 @@ export default function Login() {
   
         if (response.data.token) {
           login(response.data.token);
+          router.push('/profile');
         }
       } catch (error) {
         console.error('Error during form submission:', error);

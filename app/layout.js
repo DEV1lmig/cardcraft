@@ -1,9 +1,9 @@
 import { Inter } from "next/font/google";
-import Header from "./components/header";
-import Footer from "./components/footer";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 import "./globals.css";
 import { ViewTransitions } from 'next-view-transitions';
-import { AuthProvider } from './context/authContext'; // Import the AuthProvider
+import { AuthProvider } from '@/context/authContext'; // Import the AuthProvider
 
 const inter = Inter({ subsets: ["latin"] });
 

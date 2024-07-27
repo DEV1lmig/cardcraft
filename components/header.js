@@ -1,7 +1,7 @@
 "use client"
 
 import Link from 'next/link';
-import { useAuth } from '../context/authContext';
+import { useAuth } from './../context/authContext';
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -13,7 +13,7 @@ export default function Header() {
         <Link href="/">Home</Link>
         {user ? (
           <>
-            <Link href="/protected" className="ml-4">Protected Page</Link>
+            <Link href="/profile" className="ml-4">Protected Page</Link>
             <button onClick={logout} className="ml-4">Logout</button>
           </>
         ) : (

@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": "projects/cardcraft/app",
     "paths": {
-      "@/app/*": ["*"]
+      "@/*": ["./*"]
     }
   }
 }

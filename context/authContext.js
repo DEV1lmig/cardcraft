@@ -2,11 +2,13 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -24,6 +26,7 @@ export const AuthProvider = ({ children }) => {
   const login = (token) => {
     localStorage.setItem('token', token);
     setUser(jwtDecode(token));
+    
   };
 
   const logout = () => {
@@ -32,6 +35,9 @@ export const AuthProvider = ({ children }) => {
     if (typeof window !== 'undefined') {
       window.location.href = '/login';
     }
+    useEffect(() => {
+      router.push('/login');
+    }, []);
   };
 
   return (
