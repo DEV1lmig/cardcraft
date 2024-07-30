@@ -1,10 +1,12 @@
 "use client"
 
-import { useState, useTransition } from 'react';
-import { useRouter } from 'next/router';
-import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useState, useTransition } from "react";
+import Image from "next/image";
+import axios from "axios";
+import { useAuth } from '@/context/authContext';
+import Head from "next/head"; // Import Head for metadata handling
+import { metadata } from './metadata'; // Import metadata
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const { login } = useAuth();
@@ -13,6 +15,7 @@ export default function Login() {
     email: "",
     password: "",
   });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -20,7 +23,9 @@ export default function Login() {
       [name]: value,
     }));
   };
+
   const [isPending, startTransition] = useTransition();
+  
   const validateForm = () => {
     if (!formData.email || !formData.password) {
       toast.error("Todos los campos son requeridos");
@@ -40,7 +45,7 @@ export default function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm()) return; 
     startTransition(async () => {
       try {
         const formData = new FormData(e.target); 
@@ -55,15 +60,16 @@ export default function Login() {
         if (response.data.token) {
           login(response.data.token);
           router.push('/profile');
-        } else {
+        }else{
           toast.error(response.data.message || "Inicio de sesion fallido");
         }
       } catch (error) {
-        console.error('Error ocurrido durante el envío del formulario:', error);
-        toast.error("Ha ocurrido un error al iniciar sesión");
+        console.error('Error during form submission:', error);
+        toast.error("Un error ocurrió durante el inicio de sesión");
       }
     });
   };
+
 
   return (
     <>
@@ -72,11 +78,11 @@ export default function Login() {
         <meta name="description" content={metadata.description} />
       </Head>
       <div className="min-h-screen flex items-center justify-center bg-transparent p-6">
-        <ToastContainer />
+        {/* Image Section */}
         <div className="hidden md:block md:w-1/2 h-full">
           <div className="relative w-full h-full">
             <Image
-              src="/images/backgroundLogin.png"
+              src="/images/backgroundLogin.png" // Ensure you have a relevant image for the login page.
               alt="CartCraft Login"
               className="w-full h-full object-cover"
               fill={true}
@@ -84,6 +90,7 @@ export default function Login() {
           </div>
         </div>
         
+        {/* Form Section */}
         <div className="w-full md:w-1/2 p-8 lg:p-12 flex flex-col items-center justify-center bg-white rounded-lg shadow-lg max-w-md">
           <h1 className="text-4xl font-bold text-blue-700 mb-4">
             Iniciar sesion en <span className="text-green-500">CartCraft</span>
@@ -103,18 +110,18 @@ export default function Login() {
               <input 
                 type="password" 
                 name="password"
-                placeholder="Contrase;a" 
+                placeholder="Password" 
                 className="w-full text-black px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 value={formData.password}
                 onChange={handleChange}
               />
             </div>
             <button 
-              type="submit"
+              type="submit" 
               className="w-full px-4 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition duration-300"
               disabled={isPending}
             >
-              {isPending ? 'Iniciando sesion...' : 'Iniciando sesion'}
+              {isPending ? 'Iniciando sesion...' : 'Iniciar sesión'}
             </button>
           </form>
         </div>
