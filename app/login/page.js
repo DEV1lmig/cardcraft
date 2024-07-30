@@ -8,6 +8,7 @@ import Head from "next/head"; // Import Head for metadata handling
 import { metadata } from './metadata'; // Import metadata
 import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Login() {
   const { login } = useAuth();
