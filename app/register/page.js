@@ -68,8 +68,8 @@ export default function Register() {
           toast.error("Registro exitoso");
         }
       } catch (error) {
-        console.error('Error during form submission:', error);
-        toast.error("An error occurred during registration");
+        console.error('Un error ocurrió durante el envío del formulario:', error);
+        toast.error("Un error ocurrió durante el registro");
       }
     });
   };
@@ -94,7 +94,7 @@ export default function Register() {
         </div>
         <div className="w-full md:w-1/2 p-8 lg:p-12 flex flex-col items-center justify-center bg-white rounded-lg shadow-lg max-w-md">
           <h1 className="text-4xl font-bold text-blue-700 mb-4">
-            Register for <span className="text-green-500">CartCraft</span>
+            Registrate en <span className="text-green-500">CartCraft</span>
           </h1>
           <form className="w-full" onSubmit={handleSubmit}>
             <div className="mb-4">
