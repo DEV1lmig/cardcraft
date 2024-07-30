@@ -7,6 +7,7 @@ import { useAuth } from '@/context/authContext';
 import Head from "next/head"; // Import Head for metadata handling
 import { metadata } from './metadata'; // Import metadata
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Login() {
   const { login } = useAuth();
@@ -78,7 +79,7 @@ export default function Login() {
         <meta name="description" content={metadata.description} />
       </Head>
       <div className="min-h-screen flex items-center justify-center bg-transparent p-6">
-        {/* Image Section */}
+      <ToastContainer />
         <div className="hidden md:block md:w-1/2 h-full">
           <div className="relative w-full h-full">
             <Image
@@ -110,7 +111,7 @@ export default function Login() {
               <input 
                 type="password" 
                 name="password"
-                placeholder="Password" 
+                placeholder="Contraseña" 
                 className="w-full text-black px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 value={formData.password}
                 onChange={handleChange}
