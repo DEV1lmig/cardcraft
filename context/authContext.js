@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext(null);
@@ -9,9 +10,11 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const router = useRouter();
+  let tokenSent = null;
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    
     if (token) {
       try {
         const decoded = jwtDecode(token);
@@ -23,11 +26,35 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  
   const login = (token) => {
     localStorage.setItem('token', token);
-    setUser(jwtDecode(token));
-    
+    const decoded = jwtDecode(token);
+    setUser(decoded);
   };
+  
+  const fetchUserData = async () => {
+    tokenSent = localStorage.getItem('token')
+    console.log('Token:', tokenSent)
+    try {
+      console.log(tokenSent)
+      if (!tokenSent) {
+        throw new Error('No token found');
+      }
+
+  
+      const response = await axios.get('https://grupo5.devcorezulia.lat/cardcraft-backend/public/user-data.php', {
+        headers: {
+          'Authorization': `Bearer ${tokenSent}`
+        }
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
+  };  
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -41,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, fetchUserData }}>
       {children}
     </AuthContext.Provider>
   );
