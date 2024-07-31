@@ -55,6 +55,24 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   };  
+  const saveCard = async (card) => {
+    tokenSent = localStorage.getItem('token');
+    if (!tokenSent) {
+      throw new Error('No token found');
+    }
+
+    try {
+      const response = await axios.post('https://grupo5.devcorezulia.lat/cardcraft-backend/public/save-card.php', { card }, {
+        headers: {
+          Authorization: `Bearer ${tokenSent}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error guardando la carta:', error);
+      return null;
+    }
+  };
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -67,8 +85,9 @@ export const AuthProvider = ({ children }) => {
     }, []);
   };
 
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, fetchUserData }}>
+    <AuthContext.Provider value={{ user, saveCard, login, logout, fetchUserData }}>
       {children}
     </AuthContext.Provider>
   );

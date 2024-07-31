@@ -1,8 +1,8 @@
 import { Link } from "next-view-transitions"
 
 export const metadata = {
-  title: 'CartCraft - Collectible Card Game',
-  description: 'Join CartCraft, the ultimate collectible card game experience!'
+  title: 'CardCraft - Memory card games',
+  description: 'Unete a CardCraft'
 }
 
 export default function Home() {
